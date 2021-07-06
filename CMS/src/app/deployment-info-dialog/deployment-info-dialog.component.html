@@ -1,0 +1,13 @@
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="left left" style="height: 40vh">
+  <h1 *ngIf="data.objectName">{{ data.objectName }}</h1>
+  <p>{{ data.text | translate }}</p>
+  <p class="link">{{ data.link }}<button mat-flat-button class="linkbutton" (click)="copyMessage(data.link)" value="click to copy" >{{ "DIALOG.COPY" | translate }}</button></p>
+  
+  <button mat-flat-button (click)="openLink(data.link)" value="click to open" >{{ "DIALOG.TEST" | translate }}</button>
+</div>
+<div mat-dialog-actions fxLayoutAlign="end" style="margin-bottom: 0px">
+  <!-- <button mat-flat-button class="button-right-align" color="primary" [mat-dialog-close]="false" cdkFocusInitial
+    #cancelButton>{{ "DIALOG.CONFIRMATION.NO" | translate }}</button> -->
+  <button mat-flat-button class="button-right-align" color="primary" [mat-dialog-close]="true"
+    #acceptButton>{{ "DIALOG.OKAY" | translate }}</button>
+</div>

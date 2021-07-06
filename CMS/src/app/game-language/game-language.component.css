@@ -1,0 +1,48 @@
+.toolbar {
+    background-color: black;
+    padding: 1vh 2vh 1vh 2vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+#content {
+    margin: 3vh 0 0 0;
+}
+
+.outer-accordion .mat-expansion-panel-body {
+    padding: 0 !important;
+}
+
+.inner-accordion .mat-expansion-panel {
+    background-color: #656565;
+}
+
+.inner-accordion .mat-expansion-panel-content {
+    background-color: #888888 !important;
+}
+
+.inner-accordion .mat-expansion-panel-body {
+    padding: 0 3vh 2vh !important;
+}
+
+#referenceLanguage {
+    width: 30vh;
+    padding-left: 2vh;
+    line-height: 4vh;
+}
+
+#loadingCurtain {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+#loadingText {
+    font-size: 4vh;
+}

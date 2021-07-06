@@ -1,0 +1,89 @@
+<div>
+  <mat-card style="margin: 2vh 0 2vh 0">
+    <form [formGroup]="newUserForm" novalidate (ngSubmit)="addNewUser(newUserForm.value)" #form="ngForm">
+      <div fxFill fxLayout="row" fxLayoutGap="1%">
+        <mat-form-field fxFlex="1 1 33%" floatLabel="never">
+          <input matInput type="text" formControlName="userName" id="userName" placeholder="User-EMail">
+          <mat-error *ngIf="hasError('userName', 'required')">
+            {{ "USERS_ADMIN.ERROR_NEW_USER_USERNAME_EMPTY" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex="1 1 34%" floatLabel="never">
+          <mat-select formControlName="role" id="role" placeholder="Role">
+            <mat-option *ngFor="let role of roles" [value]="role">{{ "USERS_ADMIN.ROLE_" +  role | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="hasError('role', 'required')">
+            {{ "USERS_ADMIN.ERROR_NEW_USER_ROLE_EMPTY" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <div fxFlex="1 1 33%" fxLayoutAlign="end center">
+          <button mat-flat-button color="primary" style="min-width: 5vh !important">
+            {{ "USERS_ADMIN.ADD_NEW" | translate}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let user of users" (opened)="user.opened = true" (closed)="user.opened = false"
+      class="user">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <div *ngIf="!user.opened" fxLayout="row" fxLayoutGap="1%" style="flex-grow: 1">
+            <div fxFlex="1 1 33%">{{ user.username }}</div>
+            <div fxFlex="1 1 34%">{{ "USERS_ADMIN.ROLE_" +  user.role | translate }}</div>
+          </div>
+          <div *ngIf="user.opened" fxLayout="row" fxLayoutGap="1%" style="flex-grow: 1">
+            <div fxFlex="1 1 33%">
+              <mat-form-field floatLabel="never" style="width: 100%">
+                <input matInput type="text" [(ngModel)]="user.username" name="user.username" placeholder="Username"
+                  onClick="this.select; event.stopPropagation()" (keydown)="$event.stopPropagation()">
+              </mat-form-field>
+            </div>
+            <div fxFlex="1 1 34%">
+              <mat-form-field floatLabel="never" style="width: 100%" name="user.role">
+                <mat-select [(ngModel)]="user.role" name="user.role" placeholder="Role"
+                  onClick="this.select; event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                  <mat-option *ngFor="let role of roles" [value]="role">{{ "USERS_ADMIN.ROLE_" +  role | translate }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div fxFlex="1 1 33%" fxLayoutAlign="end center">
+              <button mat-flat-button color="primary" class="button-right-align" onClick="event.stopPropagation()"
+                (click)="cancelEditUser(user)">{{ "CANCEL" | translate }}</button>
+              <button mat-flat-button color="primary" class="button-right-align" onClick="event.stopPropagation()"
+                (click)="editUser(user)">{{ "ACCEPT" | translate }}</button>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list class="permission-list">
+        <mat-list-item *ngFor="let language of user.gameLanguages" class="permission">
+          <span fxFlex="1 1 33%" fxLayoutAlign="begin center">
+            {{ language.game_name }}
+          </span>
+          <span fxFlex="1 1 34%" fxLayoutAlign="begin center">
+            {{ language.language_id | uppercase }} -
+            {{ "GAME_LANGUAGE." + language.language_id | uppercase | translate }}
+          </span>
+          <div fxFlex="1 1 33%" fxLayoutAlign="end center">
+            <button mat-button (click)="deleteUserGameLanguage(user, language)" class="image-button" matTooltip="{{ 'USERS_ADMIN.REMOVE_PERMISSION' | translate}}">
+              <img src="assets/images/icon_trash.png" style="width: 4vh">
+            </button>
+          </div>
+        </mat-list-item>
+        <mat-action-row>
+          <app-assign-game-language fxFill [user]="user" [games]="games"
+            [availableGameLanguages]="availableGameLanguages" (languageAdded)="onLanguageAdded($event)">
+          </app-assign-game-language>
+        </mat-action-row>
+      </mat-list>
+      <mat-action-row>
+        <button mat-flat-button color="primary" (click)="deleteUser(user)">{{ "DELETE" | translate }}</button>
+        <span style="flex-grow: 1"></span>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

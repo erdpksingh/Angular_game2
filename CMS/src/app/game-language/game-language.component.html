@@ -1,0 +1,154 @@
+<div id="loadingCurtain" fxLayoutAlign="center center" *ngIf="loading">
+  <span id="loadingIndicator"></span>
+</div>
+
+<h2>{{ "GAME_LANGUAGE.INGAMENAME" | uppercase | translate }} : {{ ingameName }}</h2>
+<div class="toolbar" *ngIf="gameLanguage">
+  <button mat-flat-button class="button-left-align" color="primary" (click)="fileInput.click()"
+    [disabled]="isSubmitted()" [class.btnDisabled]="isSubmitted()">{{ "IMPORT" | translate }}</button>
+  <input hidden type="file" #fileInput (change)="openImportDialog($event)" accept=".csv" />
+  <button mat-flat-button class="button-left-align" color="primary"
+    (click)="exportContent()">{{ "EXPORT" | translate }}</button>
+  <span style="line-height: 4vh" fxLayoutAlign="begin center">{{ "GAME_LANGUAGE.REFERENCE_LANGUAGE" | translate}}</span>
+  <mat-select id="referenceLanguage" fxLayoutAlign="begin center" [(ngModel)]="referenceLanguage"
+    (ngModelChange)="onChangeReferenceLanguage()" *ngIf="otherLanguages">
+    <mat-option *ngFor="let language of otherLanguages" [value]="language">
+      {{ language.language_id | uppercase }} -
+      {{ "GAME_LANGUAGE." + language.language_id | uppercase | translate }}</mat-option>
+  </mat-select>
+  <span style="flex-grow: 1"></span>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="cancel()" [disabled]="!pendingChanges"
+    [class.btnDisabled]="!pendingChanges" *ngIf="!isSubmitted()">{{ "CANCEL" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="save()" cdkFocusInitial
+    [disabled]="!pendingChanges" [class.btnDisabled]="!pendingChanges"
+    *ngIf="!isSubmitted()">{{ "SAVE" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="submit()" [disabled]="pendingChanges"
+    [class.btnDisabled]="pendingChanges" *ngIf="!isSubmitted()">{{ "SUBMIT" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="test()">{{ "TEST" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="reject()" *ngIf="isSubmitted()">
+    <ng-container *ngIf="isAdmin()">{{ "REJECT" | translate }}</ng-container>
+    <ng-container *ngIf="!isAdmin()">{{ "CANCEL_SUBMIT" | translate }}</ng-container>
+  </button>
+  <button mat-flat-button class="button-right-align" color="primary" (click)="deploy()"
+    *ngIf="canDeploy()">{{ "DEPLOY" | translate }}</button>
+</div>
+<div id="content" *ngIf="gameLanguage">
+  <mat-accordion class="outer-accordion">
+    <ng-container *ngFor="let category of categories | keyvalue">
+
+      <mat-expansion-panel *ngIf="category.value.values.length > 0 || category.value.entries.length > 0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ "GAME_LANGUAGE." + category.key | uppercase | translate }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-accordion class="inner-accordion">
+          <mat-expansion-panel *ngIf="category.value.values.length > 0">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ "GAME_LANGUAGE.VALUES" | translate }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-list class="inner-accordion-values">
+              <mat-list-item *ngFor="let value of category.value.values" #listitem>
+                <p fxFlex="1 0 33%">
+                  {{ "GAME_LANGUAGE.KEYS." + value.label | uppercase | translate:value.hierarchy_indices }}
+                </p>
+                <mat-form-field floatLabel="always" fxFlex="1 1 67%" *ngIf="value.style === 'default'">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <textarea matInput cdkTextareaAutosize [(ngModel)]="value.value" name="value.value"
+                    placeholder="{{ value.base_value }}" (keypress)="onValueChanged()" (paste)="onValueChanged()"
+                    [readonly]="isSubmitted()"></textarea>
+                </mat-form-field>
+                <mat-form-field floatLabel="always" fxFlex="1 1 67%" *ngIf="value.style === 'config-text'">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <textarea matInput cdkTextareaAutosize [(ngModel)]="value.value" name="value.value"
+                            placeholder="{{ value.base_value }}" (keypress)="onValueChanged()"
+                            [readonly]="isSubmitted() || !gameLanguage.is_base_language">
+                  </textarea>
+                </mat-form-field>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel *ngFor="let entry of category.value.entries | keyvalue:valueAscOrder">
+            <mat-expansion-panel-header>
+              <mat-panel-title *ngIf="!category.key.includes('pair')">
+                {{ "GAME_LANGUAGE.ENTRY_" + category.key + "_" + entry.key | uppercase | translate }}
+              </mat-panel-title>
+              <mat-panel-title *ngIf="category.key.includes('pair')">
+                {{ entry.value.values[0].value | uppercase }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-list>
+              <mat-list-item *ngFor="let value of entry.value.values" #listitem>
+                <span fxFlex="1 0 33%">
+                  <p *ngIf="value.style != 'checkbox'">
+                    {{ "GAME_LANGUAGE.KEYS." + value.label | uppercase | translate:value.hierarchy_indices }}</p>
+                </span>
+                <mat-form-field floatLabel="always" fxFlex="1 1 67%" *ngIf="value.style === 'default'">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <textarea matInput cdkTextareaAutosize [(ngModel)]="value.value" name="value.value"
+                    placeholder="{{ value.base_value }}" (keypress)="onValueChanged()" (paste)="onValueChanged()"
+                    [readonly]="isSubmitted()"></textarea>
+                </mat-form-field>
+                <span fxFlex="1 1 67%" *ngIf="value.style === 'checkbox'" style="margin-bottom: 4vh">
+                  {{ "GAME_LANGUAGE.KEYS." + value.label | uppercase | translate:value.hierarchy_indices }}&nbsp;
+                  <mat-checkbox *ngIf="gameLanguage.is_base_language" [checked]="value.value === '1'"
+                    (change)="value.value = $event.checked ? '1' : '0'; onValueChanged();" name="value.value"
+                    [disabled]="isSubmitted()">
+                  </mat-checkbox>
+                  <mat-checkbox *ngIf="!gameLanguage.is_base_language" [checked]="value.base_value === '1'"
+                    name="value.base_value" [disabled]="true">
+                  </mat-checkbox>
+                </span>
+                <mat-form-field floatLabel="always" fxFlex="1 1 67%"
+                  *ngIf="(value.style === 'integer' || value.style === 'decimal') && gameLanguage.is_base_language">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <input matInput type="number" [(ngModel)]="value.value" name="value.value"
+                    placeholder="{{ value.base_value }}" (ngModelChange)="onValueChanged()" [readonly]="isSubmitted()">
+                </mat-form-field>
+                <mat-form-field floatLabel="always" fxFlex="1 1 67%"
+                  *ngIf="(value.style === 'integer' || value.style === 'decimal') && !gameLanguage.is_base_language">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <input matInput type="number" [(ngModel)]="value.base_value" name="value.base_value"
+                    (ngModelChange)="onValueChanged()" [readonly]="true" [disabled]="true">
+                </mat-form-field>
+                <mat-form-field fxFlex="1 1 67%" floatLabel="always" style="width: 100%" name="value.value" *ngIf="value.style === 'carcolor'">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <mat-select [(ngModel)]="value.value" name="value.value" placeholder="Car Color"
+                    onClick="this.select; event.stopPropagation()" (keydown)="$event.stopPropagation()" (ngModelChange)="onValueChanged()">
+                    <mat-option *ngFor="let theme of theme_options" [value]="theme">{{ "GAME_LANGUAGE.CARCOLORS_" +  theme | translate }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="1 1 67%" floatLabel="always" style="width: 100%" name="value.value" *ngIf="value.style === 'car'">
+                  <mat-label>{{ value.reference_value }}</mat-label>
+                  <mat-select [(ngModel)]="value.value" name="value.value" placeholder="Car"
+                    onClick="this.select; event.stopPropagation()" (keydown)="$event.stopPropagation()" (ngModelChange)="onValueChanged()">
+                    <mat-option *ngFor="let car of car_options" [value]="car">{{ "GAME_LANGUAGE.CARS_" +  car | translate }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-list-item>
+
+              <mat-action-row *ngIf="category.value.add_and_remove">
+                <button mat-flat-button class="button-right-align" color="primary" *ngIf="gameLanguage.is_base_language" [disabled]="numberPairs<=6" [class.btnDisabled]="numberPairs<=6"
+                  (click)="removePair(gameLanguage, entry.value, category.value)">{{ "GAME_LANGUAGE.REMOVE_PAIR" | translate }}</button>
+                <span style="flex-grow: 1"></span>
+              </mat-action-row>
+
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <mat-action-row *ngIf="category.value.add_and_remove">
+          <button mat-flat-button color="primary" *ngIf="gameLanguage.is_base_language"
+            (click)="addPair(gameLanguage, category.value)">{{ "GAME_LANGUAGE.ADD_PAIR" | translate }}</button>
+          <span style="flex-grow: 1"></span>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </ng-container>
+  </mat-accordion>
+</div>

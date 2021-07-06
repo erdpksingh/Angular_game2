@@ -1,0 +1,28 @@
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="left left" style="height: 40vh" class="new-game">
+  <h1 *ngIf="data.objectName">{{ data.objectName | translate}}</h1>
+  <!-- Game name input -->
+  <mat-form-field>
+    <mat-label>{{ "ADMIN.GAMESNAME" | translate }}</mat-label>
+    <textarea matInput cdkTextareaAutosize [(ngModel)]="data.name"></textarea>
+  </mat-form-field>
+
+  <!-- base language select -->
+  
+  
+  <mat-form-field>
+    <mat-label>{{ "ADMIN.GAMESLANGUAGE" | translate }}</mat-label>
+    <mat-select placeholder="Language" id="newLanguage" [(ngModel)]="this.selectedLanguage" (ngModelChange)="ChangeLanguage()">
+      <mat-option *ngFor="let language of availableLanguages" [value]="language">
+        {{ language.id | uppercase }} -
+        {{ "GAME_LANGUAGE." + language.id | uppercase | translate }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
+<div mat-dialog-actions fxLayoutAlign="end" style="margin-bottom: 0px">
+  <button mat-flat-button class="button-right-align" color="primary" [mat-dialog-close]="false" cdkFocusInitial
+    #cancelButton>{{ "DIALOG.CONFIRMATION.NO" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" [mat-dialog-close]="true"
+    #acceptButton>{{ "DIALOG.CONFIRMATION.YES" | translate }}</button>
+</div>

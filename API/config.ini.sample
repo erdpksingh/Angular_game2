@@ -1,0 +1,5 @@
+[database_connection]
+; example: "pgsql:host=localhost;dbname=cr_db"
+db_connection="#{db_connection}#"
+db_user="#{db_user}#"
+db_password="#{db_password}#"

@@ -1,0 +1,18 @@
+<form [formGroup]="newLanguageForm" novalidate (ngSubmit)="addGameLanguage(newLanguageForm.value)" #form="ngForm">
+  <div fxFill fxLayout="row">
+    <mat-form-field floatLabel="never" fxFlex="1 1 20%">
+      <mat-select placeholder="Language" formControlName="newLanguage" id="newLanguage">
+        <mat-option *ngFor="let language of game.availableLanguages" [value]="language">
+          {{ language.id | uppercase }} -
+          {{ "GAME_LANGUAGE." + language.id | uppercase | translate }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="hasError('newLanguage', 'required')">
+        {{ "GAMES_ADMIN.ERROR_LANGUAGE_EMPTY" | translate }}
+      </mat-error>
+    </mat-form-field>
+    <span style="flex-grow: 1"></span>
+    <button mat-flat-button color="primary" style="min-width: 5vh !important; align-self: center">
+      {{ "CREATE" | translate}}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,5 @@
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="data">
+  <span fxFlex="grow">{{ data.message | translate }}</span>
+  <button mat-button class="button-right-align notification-button" color="primary"
+    (click)="snackBarRef.dismiss()">{{ "OK" | translate }}</button>
+</div>

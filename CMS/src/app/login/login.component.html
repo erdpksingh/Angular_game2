@@ -1,0 +1,9 @@
+<div id="autherror" *ngIf="autherror">
+    {{ "LOGIN.ERROR_UNAUTHENTICATED" | translate }}
+</div>
+<div *ngIf="development">
+    <mat-divider></mat-divider>
+    <h3>For development purpose only:</h3>
+    <button mat-flat-button class="button-left-align" color="primary" (click)="loginAsAuthor()">Author</button>
+    <button mat-flat-button class="button-left-align" color="primary" (click)="loginAsAdmin()">Admin</button>
+</div>

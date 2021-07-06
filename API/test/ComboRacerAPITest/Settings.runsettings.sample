@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <TestRunParameters>
+    <Parameter name="BASE_URL" value="https://int.mobile.gt.mercedes-benz.com/games_content/cr-api/v1" />
+  </TestRunParameters>
+</RunSettings>

@@ -1,0 +1,56 @@
+<div fxFill fxLayout="row wrap">
+  <div fxFlex="1 0 45%">
+    <p>{{ "ADMIN.DESCRIPTION" | translate }}</p>
+    <button (click)="openGamesAdmin()" class="button-left-align" color="primary"
+            mat-flat-button>{{ "ADMIN.GAMES" | translate }}</button>
+    <button (click)="openUsersAdmin()" class="button-left-align" color="primary"
+            mat-flat-button>{{ "ADMIN.USERS" | translate }}</button>
+  </div>
+  <div fxFlex="0 0 5%" fxHide fxHide.gt-md="false"></div>
+  <div fxFlex="1 0 100%" fxFlex.gt-md="1 0 50%">
+    <mat-card>
+      <h2>{{"ADMIN.SETTINGS.TITLE" | translate }}</h2>
+      <mat-list>
+        <mat-list-item>
+          <mat-checkbox (change)="adminSettings.submit_notification = $event.checked; onAdminSettingsChanged();"
+                        [checked]="adminSettings.submit_notification">{{"ADMIN.SETTINGS.SUBMIT_NOTIFICATION" | translate}}</mat-checkbox>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+    <mat-expansion-panel (opened)="onOpenAuditLog()">
+      <mat-expansion-panel-header>
+        <h2>{{ "ADMIN.AUDIT_LOG" | translate}}</h2>
+      </mat-expansion-panel-header>
+      <table [dataSource]="auditLog" fxFill mat-table>
+        <ng-container matColumnDef="timestamp">
+          <th *matHeaderCellDef mat-header-cell>
+            <div style="text-align: center; display: inline-block">
+              {{ "ADMIN.AUDIT.TIMESTAMP" | translate}}<br>
+            <small>{{timeZone}}</small>
+            </div>
+          </th>
+          <td *matCellDef="let element" mat-cell>{{element.timestamp | date:'dd.MM.yyyy HH:mm'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <th *matHeaderCellDef mat-header-cell>{{ "ADMIN.AUDIT.ACTION" | translate}}</th>
+          <td *matCellDef="let element"
+              mat-cell>{{ "ADMIN.AUDIT.ACTIONS." + element.action | uppercase | translate:element.data}}</td>
+        </ng-container>
+        <ng-container matColumnDef="username">
+          <th *matHeaderCellDef mat-header-cell>{{ "ADMIN.AUDIT.USERNAME" | translate}}</th>
+          <td *matCellDef="let element" mat-cell>{{element.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="details">
+          <th *matHeaderCellDef mat-header-cell>{{ "ADMIN.AUDIT.DETAILS" | translate}}</th>
+          <td *matCellDef="let element" mat-cell>
+            <button (click)="openAuditDetails(element)" *ngIf="element.details" class="audit-details-button"
+                    color="primary"
+                    mat-flat-button><i class="fas fa-search-plus"></i></button>
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: displayedColumns;" class="audit-log-row" mat-row></tr>
+      </table>
+    </mat-expansion-panel>
+  </div>
+</div>

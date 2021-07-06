@@ -1,0 +1,52 @@
+.game .mat-expansion-panel-content {
+    background-color: #222;
+}
+
+.language-list {
+    margin: 0 -3vh 0 -3vh !important;
+}
+
+.language-list .mat-list-item {
+    padding: 0 3vh 0 3vh !important;
+    /* width: auto !important; */
+}
+
+.language-list .mat-list-item:nth-child(even) {
+    background-color: #111;
+}
+
+.language {
+    height: 6vh !important;
+}
+
+.game-name {
+    text-align: right !important;
+}
+
+.new-game .mat-form-field-label {
+    color: #111 !important;
+}
+
+.new-game .mat-select-arrow {
+    color: #111 !important;
+}
+
+.new-game .mat-select-value {
+    color: #111 !important;
+}
+
+.new-game input {
+    text-align: center;
+}
+
+.new-game .mat-form-field-underline {
+   background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.mat-list-text {
+    overflow: visible !important;
+}
+
+.mat-list-text p {
+    overflow: visible !important;
+}

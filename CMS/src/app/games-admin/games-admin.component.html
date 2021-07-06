@@ -1,0 +1,46 @@
+<div>
+  <button mat-flat-button class="button-left-align" color="primary"
+    (click)="createNewGame()">{{ "ADMIN.GAMESNEW" | translate }}</button>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let game of games" class="game">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ game.name | uppercase }}
+        </mat-panel-title>
+        
+        <button mat-button (click)="deleteGame(game)" class="image-button button-right-align-2vh"
+            matTooltip="{{ 'DELETE' | translate}}">
+            <img src="assets/images/icon_trash.png" style="width: 4vh">
+        </button>
+      </mat-expansion-panel-header>
+
+      <mat-list fxFlex="1 2 100%" *ngIf="game.languages" class="language-list">
+        <mat-list-item *ngFor="let language of game.languages" class="language">
+          <p mat-line *ngIf="language.is_base_language">{{ language.label }} - {{ "GAME_LANGUAGE.IS_BASE"  | translate}}</p>
+          <p mat-line *ngIf="!language.is_base_language">{{ language.label }}</p>
+          <button mat-button (click)="openGameLanguage(language)" class="image-button button-right-align"
+            matTooltip="{{ 'EDIT' | translate}}">
+            <img src="assets/images/icon_pencil.png" style="width: 4vh">
+          </button>
+          <button *ngIf="!language.is_base_language" mat-button (click)="deleteGameLanguage(game, language)" class="image-button button-right-align"
+            matTooltip="{{ 'DELETE' | translate}}">
+            <img src="assets/images/icon_trash.png" style="width: 4vh">
+          </button>
+        </mat-list-item>
+      </mat-list>
+
+      <mat-action-row *ngIf="game.languages">
+        <app-new-game-language fxFill [game]="game" (languageAdded)="onLanguageAdded($event)"></app-new-game-language><br/>
+      </mat-action-row>
+      <mat-action-row *ngIf="game.languages">
+        <p fxFlex="1 0 33%">
+            {{ "ADMIN.GAMESPROJECTNAME" | translate }} :
+        </p>
+        <input matInput type="text" [(ngModel)]="game.name" name="game.name"
+            placeholder="{{ 'QUESTIONS.GAME_TITLE' | translate}}" (keypress)="updateGame(game)"
+            (keyup)="updateGame(game)" (paste)="updateGame(game)">
+      </mat-action-row>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

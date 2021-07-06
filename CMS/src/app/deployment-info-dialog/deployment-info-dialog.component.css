@@ -1,0 +1,15 @@
+.link {
+    background-color: #dddddd;
+    border: 1px solid #aaaaaa;
+    color: #555555;
+    position: relative;
+    padding-right: 125px;
+}
+
+.linkbutton {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    margin: 0px 0px 0px 0px !important;
+    height: 100%;
+}

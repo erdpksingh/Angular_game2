@@ -1,0 +1,14 @@
+<div id="header">
+  <h1>{{ "DIALOG.IMPORT.TITLE" | translate}}</h1>
+</div>
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="center center" style="height: 40vh">
+  <div translate [translateParams]="{ value: file.name }" *ngIf="loading">DIALOG.IMPORT.LOADING</div>
+  <mat-spinner *ngIf="loading" style="margin: 5vh"></mat-spinner>
+  <p *ngIf="!loading && success">{{ "DIALOG.IMPORT.CONFIRMATION" | translate }}</p>
+  <p *ngIf="!loading && !success">{{ "DIALOG.IMPORT.ERROR" | translate }}<br>{{ errorDetails }}</p>
+</div>
+<div mat-dialog-actions fxLayoutAlign="end" style="margin-bottom: 0px">
+  <button mat-flat-button class="button-right-align" color="primary" (click)="onCancel()" #cancelButton>{{ "CANCEL" | translate }}</button>
+  <button mat-flat-button class="button-right-align" color="primary" [mat-dialog-close]="content" cdkFocusInitial #acceptButton
+    [disabled]="loading || !success" [class.btnDisabled]="loading || !success">{{ "ACCEPT" | translate }}</button>
+</div>
